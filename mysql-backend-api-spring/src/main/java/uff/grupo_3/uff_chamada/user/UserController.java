@@ -1,42 +1,45 @@
 package uff.grupo_3.uff_chamada.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UserController {
-    private final UserService userService;
 
     @Autowired
-    public UserController(UserService userService){
-        this.userService = userService;
+    private UserService userService;
+
+    @PostMapping("/create")
+    public User addUser(@RequestBody User user){
+        return userService.addUser(user);
     }
 
-    @GetMapping("/getUserById/{id}")
-    public User getUserById(@PathVariable("id") int id){
-        return this.userService.getUserById(id);
+    @GetMapping("/id/{id}")
+    public User getUserById(@PathVariable int id){
+        return userService.getUserById(id);
     }
 
-    @PostMapping("/createUser")
-    public void createUser(@RequestBody User user){
-        this.userService.createUser(user);
+    @GetMapping("/name/{name}")
+    public User getUserByName(@PathVariable String name){
+        return userService.getUserByName(name);
     }
 
-    @PutMapping("/updateUser")
-    public void updateUser(@RequestBody User user){
-        this.userService.updateUser(user);
+    @GetMapping()
+    public List<User> getUsers(){
+        return userService.getUsers();
     }
 
-    @DeleteMapping("/deleteUser/{id}")
-    public void deleteUser(@PathVariable("id") int id){
-        this.userService.deleteUser(id);
+    @DeleteMapping("/delete/{id}")
+    public String deleteUserById(@PathVariable int id){
+        return userService.deleteUserById(id);
     }
+
+    @PutMapping("/update")
+    public User updateUser(@RequestBody User user){
+        return userService.updateUser(user);
+    }
+
 }

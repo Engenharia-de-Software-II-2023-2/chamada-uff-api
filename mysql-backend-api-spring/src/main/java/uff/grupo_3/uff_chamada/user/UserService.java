@@ -3,30 +3,44 @@ package uff.grupo_3.uff_chamada.user;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-// TODO: botar validacoes adicionais no CRUD
+import java.util.List;
 
 @Service
 public class UserService {
-    private final UserRepository userRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository){
-        this.userRepository = userRepository;
+    private UserRepository userRepository;
+
+    public User addUser(User user){
+        return userRepository.save(user);
     }
 
     public User getUserById(int id){
-        return this.userRepository.findById(id).orElseThrow(() -> new IllegalStateException("usuario com id " + id + " não existe"));
+        return userRepository.findById(id).orElse(null);
     }
 
-    public void createUser(User user){
-        this.userRepository.save(user);
+    public User getUserByName(String name){
+        return userRepository.findByName(name);
     }
 
-    public void updateUser(User user){
-        this.userRepository.save(user);
+    public List<User> getUsers(){
+        return userRepository.findAll();
     }
 
-    public void deleteUser(int id){
-        this.userRepository.deleteById(id);
+    public String deleteUserById(int id){
+        userRepository.deleteById(id);
+        return "User with id = " + id + " removed!";
     }
+
+    public User updateUser(User user){
+        User existingUser = userRepository.findById(user.getId()).orElse(null);
+        existingUser.setUsername(user.getUsername());
+        existingUser.setPassword(user.getPassword());
+        existingUser.setToken(user.getToken());
+        existingUser.setType(user.getType());
+        existingUser.setName(user.getName());
+        existingUser.setEmail(user.getEmail());
+        return userRepository.save(existingUser);
+    }
+
 }

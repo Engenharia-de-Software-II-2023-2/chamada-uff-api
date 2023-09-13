@@ -2,36 +2,27 @@ package uff.grupo_3.uff_chamada.user;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-enum UserType {
-    STUDENT,
-    PROFESSOR,
-}
-
-@Entity
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@Table(name = "USER")
 public class User {
-    
-    @Id
-    @SequenceGenerator(
-        name = "user_sequence",
-        sequenceName = "user_sequence",
-        allocationSize = 1
-    )
 
-    @GeneratedValue(
-        strategy = GenerationType.SEQUENCE,
-        generator = "user_sequence"
-    )
+    @Id
+    @GeneratedValue
     private int id;
     private String username;
     private String password;
     private String token;
-    private UserType userType;
+    private String type;
     private String name;
     private String email;
+
 }
