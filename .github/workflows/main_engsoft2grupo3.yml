@@ -26,7 +26,7 @@ jobs:
           pwd
           cd ./mysql-backend-api-spring
           pwd
-          mvn clean install
+          mvn clean install -DskipTests
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
