@@ -1,5 +1,7 @@
 package uff.grupo_3.uff_chamada.modules._class;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

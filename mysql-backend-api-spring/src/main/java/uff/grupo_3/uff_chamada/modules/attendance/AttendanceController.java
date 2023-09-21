@@ -1,5 +1,6 @@
 package uff.grupo_3.uff_chamada.modules.attendance;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,13 +28,15 @@ public class AttendanceController {
     }
 
     @PostMapping(path = "/createAttendance", produces = "aplication/json")
-    public void createAttedance(@RequestBody Attendance attendance){
+    public ResponseEntity<Void> createAttedance(@RequestBody Attendance attendance){
         this.attendanceService.createAttedance(attendance);
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping(path = "/updateAttendance", produces = "aplication/json")
-    public void updateAttendance(@RequestBody Attendance attendance){
+    public ResponseEntity<Void> updateAttendance(@RequestBody Attendance attendance){
         this.attendanceService.updateAttendance(attendance);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping(path = "/deleteAttendance/{id}", produces = "aplication/json")
@@ -41,4 +44,9 @@ public class AttendanceController {
         this.attendanceService.deleteAttendance(id);
     }
 
+    // TODO: criar endpoint para criar chamada, por default cria com status WAITING
+
+    // TODO: criar endpoint para abrir chamada: body só com id (fazer validação se chamada existe) e só mudar stautus de chamada para ACTIVE
+
+    // TODO: criar endpoint para fechar chamada: body só com id (fazer validação se chamada existe) e só mudar stautus de chamada para OVER
 }

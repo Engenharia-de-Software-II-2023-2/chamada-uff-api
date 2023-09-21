@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import uff.grupo_3.uff_chamada.auth.dto.request.LoginRequest;
+import uff.grupo_3.uff_chamada.auth.dto.request.RegisterRequest;
+import uff.grupo_3.uff_chamada.auth.dto.response.LoginResponse;
 import uff.grupo_3.uff_chamada.config.TokenService;
 import uff.grupo_3.uff_chamada.modules.user.User;
 import uff.grupo_3.uff_chamada.modules.user.UserRepository;
@@ -39,12 +42,18 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody RegisterRequest request){
-        if (this.userRepository.findByUsername(request.getUsername()) != null){
+        if (this.userRepository.findByUsername(request.name()) != null){
             return ResponseEntity.badRequest().build();
         }
         
-        String encryptedPassword = new BCryptPasswordEncoder().encode(request.getPassword());
-        User newUser = new User(request.getUsername(), encryptedPassword, request.getRole());
+        String encryptedPassword = new BCryptPasswordEncoder().encode(request.password());
+        User newUser = new User(
+            request.username(),
+            encryptedPassword,
+            request.role(),
+            request.name(),
+            request.email()
+        );
 
         this.userRepository.save(newUser);
 

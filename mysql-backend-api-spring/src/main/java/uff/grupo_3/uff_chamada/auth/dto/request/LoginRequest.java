@@ -1,4 +1,4 @@
-package uff.grupo_3.uff_chamada.auth;
+package uff.grupo_3.uff_chamada.auth.dto.request;
 
 import lombok.Data;
 

@@ -19,7 +19,7 @@ public class Justification {
     @Id
     private int id;
     private int studentId;
-    private int attedanceId;
+    private int attendanceId;
     private LocalDateTime createdAt;
     @Lob
     private byte[] document; // TODO: VER SE ISSO FUNCIONA / TESTAR NO POSTMAN
