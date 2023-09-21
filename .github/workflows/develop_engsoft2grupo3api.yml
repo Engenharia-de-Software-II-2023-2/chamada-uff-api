@@ -22,7 +22,12 @@ jobs:
           java-version: '17'
 
       - name: Build with Maven
-        run: mvn clean install
+        run: |
+          pwd
+          cd ./mysql-backend-api-spring
+          pwd
+          mvn clean install -DskipTests
+          cd ..
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
