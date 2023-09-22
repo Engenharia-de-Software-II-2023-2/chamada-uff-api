@@ -1,4 +1,4 @@
-package uff.grupo_3.uff_chamada.user;
+package uff.grupo_3.uff_chamada.modules.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

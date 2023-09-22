@@ -1,4 +1,4 @@
-package uff.grupo_3.uff_chamada.user;
+package uff.grupo_3.uff_chamada.modules.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,8 +36,7 @@ public class UserService {
         User existingUser = userRepository.findById(user.getId()).orElse(null);
         existingUser.setUsername(user.getUsername());
         existingUser.setPassword(user.getPassword());
-        existingUser.setToken(user.getToken());
-        existingUser.setType(user.getType());
+        existingUser.setRole(user.getRole());
         existingUser.setName(user.getName());
         existingUser.setEmail(user.getEmail());
         return userRepository.save(existingUser);
