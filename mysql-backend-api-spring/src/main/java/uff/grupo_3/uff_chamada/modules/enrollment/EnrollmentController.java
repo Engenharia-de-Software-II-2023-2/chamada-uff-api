@@ -2,7 +2,6 @@ package uff.grupo_3.uff_chamada.modules.enrollment;
 
 import java.util.List;
 
-import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,6 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 import uff.grupo_3.uff_chamada.modules.enrollment.dto.request.StudentEnrollmentsRequestDto;
 import uff.grupo_3.uff_chamada.modules.enrollment.dto.response.StudentEnrollmentResponseDto;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "Enrollment", description = "Enrollment Requests")
 @RestController
 @RequestMapping("/enrollment")
 public class EnrollmentController {

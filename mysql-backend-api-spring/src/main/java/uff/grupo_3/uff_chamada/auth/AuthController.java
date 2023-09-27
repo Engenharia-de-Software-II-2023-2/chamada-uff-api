@@ -17,6 +17,9 @@ import uff.grupo_3.uff_chamada.config.TokenService;
 import uff.grupo_3.uff_chamada.modules.user.User;
 import uff.grupo_3.uff_chamada.modules.user.UserRepository;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "Auth", description = "Authentication Requests")
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
