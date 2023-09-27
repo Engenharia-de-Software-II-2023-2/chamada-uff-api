@@ -9,8 +9,7 @@ import io.swagger.v3.oas.annotations.info.Info;
 
 @OpenAPIDefinition(info=@Info(
 	title="Grupo 3 Backend API",
-	description = "API desenvolvida para o trabalho 'Chamada Inteligente' da matéria Engenharia de Software 2",
-	version = "0.0.2"
+	description = "API desenvolvida para o trabalho 'Chamada Inteligente' da matéria Engenharia de Software 2"
 ))
 @SpringBootApplication
 @RestController
