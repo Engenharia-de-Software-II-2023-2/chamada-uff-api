@@ -1,7 +1,5 @@
 package uff.grupo_3.uff_chamada.modules._class;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,7 +10,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 
+@Tag(name = "Class", description = "Class Requests")
 @RestController
 @RequestMapping("/class")
 public class ClassController {

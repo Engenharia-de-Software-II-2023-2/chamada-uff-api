@@ -3,8 +3,11 @@ package uff.grupo_3.uff_chamada.modules.user;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import java.util.List;
 
+@Tag(name = "User", description = "User Requests")
 @RestController
 @RequestMapping("/users")
 public class UserController {
