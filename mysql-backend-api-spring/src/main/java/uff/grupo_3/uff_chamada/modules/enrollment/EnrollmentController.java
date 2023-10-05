@@ -45,7 +45,7 @@ public class EnrollmentController {
 
     @PostMapping("/getStudentEnrollments")
     @ResponseBody
-    public ResponseEntity<List<StudentEnrollmentResponseDto>> getStudentEnrollments(
+    public ResponseEntity<StudentEnrollmentResponseDto> getStudentEnrollments(
             @RequestBody StudentEnrollmentsRequestDto request) {
                 try{
                     return ResponseEntity.ok().body(enrollmentService.getStudentEnrollments(request.studentId()));

@@ -5,8 +5,10 @@ import lombok.Data;
 @Data
 public class LoginResponse {
     private String token;
+    private int userId;
 
-    public LoginResponse(String token){
+    public LoginResponse(int userId, String token){
+        this.userId = userId;
         this.token = token;
     }
 }

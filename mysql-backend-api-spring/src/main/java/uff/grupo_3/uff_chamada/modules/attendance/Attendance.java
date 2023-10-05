@@ -1,5 +1,6 @@
 package uff.grupo_3.uff_chamada.modules.attendance;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
@@ -11,11 +12,13 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Entity
 @Table
 @Data
+@AllArgsConstructor
 @SequenceGenerator(name = "attendance_id_sequence", sequenceName = "attendance_id_sequence", allocationSize = 1, initialValue = 4)
 public class Attendance {
     
@@ -25,6 +28,9 @@ public class Attendance {
     private int classId;
     private LocalDateTime start;
     private LocalTime duration;
+    private double latitude;
+    private double longitude;
+    private double radius;
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private AttendanceStatus status;
 }

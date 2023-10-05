@@ -1,6 +1,10 @@
 package uff.grupo_3.uff_chamada.modules._class;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+// import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -8,9 +12,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import uff.grupo_3.uff_chamada.modules._class.dto.request.CurrentProfessorClassesRequestDto;
+import uff.grupo_3.uff_chamada.modules._class.dto.response.CurrentProfessorClassesResponseDto;
 
 @Tag(name = "Class", description = "Class Requests")
 @RestController
@@ -41,5 +48,11 @@ public class ClassController {
     @DeleteMapping("/deleteClass/{id}")
     public void deleteClass(@PathVariable("id") int id){
         this.classService.deleteClass(id);
+    }
+
+    @PostMapping("/currentProfessorClasses")
+    @ResponseBody
+    public ResponseEntity<CurrentProfessorClassesResponseDto> currentProfessorClasses(@RequestBody CurrentProfessorClassesRequestDto request){
+        return ResponseEntity.ok(classService.currentProfessorClasses(request.year(), request.semester(), request.professorName()));
     }
 }

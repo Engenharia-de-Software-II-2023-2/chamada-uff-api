@@ -28,4 +28,16 @@ public class AttendanceService {
         this.attendanceRepository.deleteById(id);
     }
 
+    public Attendance createWaitingAttendance(Attendance attendance){
+        attendance.setStatus(AttendanceStatus.WAITING);
+        attendanceRepository.save(attendance);
+        return attendance;
+    }
+
+    public Attendance createActiveAttendance(Attendance attendance){
+        attendance.setStatus(AttendanceStatus.ACTIVE);
+        attendanceRepository.save(attendance);
+        return attendance;
+    }
+
 }

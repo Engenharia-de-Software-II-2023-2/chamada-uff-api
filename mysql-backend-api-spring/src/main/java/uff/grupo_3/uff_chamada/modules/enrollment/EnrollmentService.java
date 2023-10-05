@@ -34,29 +34,9 @@ public class EnrollmentService {
     //     return enrollmentRepository.findStudentEnrollments(studentId).orElseGet(() -> new ArrayList<StudentEnrollmentResponseDto>());
     // }
 
-    public List<StudentEnrollmentResponseDto> getStudentEnrollments(int studentId){
-        User user = userRepository.findById(studentId).orElseThrow(() -> new IllegalStateException("nao existe usuario"));
+    public StudentEnrollmentResponseDto getStudentEnrollments(int studentId){
         List<Enrollment> enrollments = enrollmentRepository.findByStudentId(studentId).orElseGet(() -> new ArrayList<Enrollment>());
-
-        List<StudentEnrollmentResponseDto> enrollmentsDto = new ArrayList<>();
-        
-        for (Enrollment enrollment : enrollments){
-            
-            Class _class = classRepository.findById(enrollment.getClassId()).orElseThrow(() -> new IllegalStateException("classe não existe"));
-            
-            StudentEnrollmentResponseDto enrollmentResponseDto = new StudentEnrollmentResponseDto(
-                enrollment.getId(),
-                enrollment.getStudentId(),
-                user.getName(),
-                enrollment.getClassId(),
-                _class.getName(),
-                enrollment.getCreatedAt()
-            );
-
-            enrollmentsDto.add(enrollmentResponseDto);
-        }
-
-        return enrollmentsDto;
+        return new StudentEnrollmentResponseDto(enrollments);
     }
 
     public void createEnrollment(Enrollment enrollment){

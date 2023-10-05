@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import uff.grupo_3.uff_chamada.modules.attendance.dto.response.CreateWaitingAttendanceResponseDTO;
 
 @Tag(name = "Attendance", description = "Attendance Requests")
 @RestController
@@ -45,6 +46,16 @@ public class AttendanceController {
     @DeleteMapping(path = "/deleteAttendance/{id}", produces = "aplication/json")
     public void deleteAttendance(@PathVariable("id") int id){
         this.attendanceService.deleteAttendance(id);
+    }
+
+    @PostMapping(path = "/createWaitingAttendance")
+    public ResponseEntity<Attendance> createWaitingAttendance(@RequestBody Attendance attendance){
+        return ResponseEntity.ok((attendanceService.createWaitingAttendance(attendance))); 
+    }
+
+    @PostMapping(path = "/createActiveAttendance")
+    public ResponseEntity<Attendance> createActiveAttendance(@RequestBody Attendance attendance){
+        return ResponseEntity.ok(attendanceService.createActiveAttendance(attendance));
     }
 
     // TODO: criar endpoint para criar chamada, por default cria com status WAITING

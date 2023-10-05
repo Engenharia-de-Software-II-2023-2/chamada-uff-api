@@ -3,6 +3,7 @@ package uff.grupo_3.uff_chamada.modules.user;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -19,8 +20,8 @@ public class UserService {
         return userRepository.findById(id).orElse(null);
     }
 
-    public User getUserByName(String name){
-        return userRepository.findByName(name);
+    public List<User> getUserByName(String name){
+        return userRepository.findByName(name).orElseGet(() -> new ArrayList<>());
     }
 
     public List<User> getUsers(){
