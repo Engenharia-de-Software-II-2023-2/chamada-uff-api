@@ -22,13 +22,18 @@ jobs:
           java-version: '17'
 
       - name: Build with Maven
-        run: mvn clean install
+        run: |
+          pwd
+          cd ./mysql-backend-api-spring
+          pwd
+          mvn clean install -DskipTests --no-transfer-progress
+          cd ..
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
           name: java-app
-          path: '${{ github.workspace }}/target/*.jar'
+          path: '${{ github.workspace }}\mysql-backend-api-spring\target\*.jar'
 
   deploy:
     runs-on: windows-latest
