@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
-import uff.grupo_3.uff_chamada.modules.attendance.dto.response.CreateWaitingAttendanceResponseDTO;
 
 @Tag(name = "Attendance", description = "Attendance Requests")
 @RestController

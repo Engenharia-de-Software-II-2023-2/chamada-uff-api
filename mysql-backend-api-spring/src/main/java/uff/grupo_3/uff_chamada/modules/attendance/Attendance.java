@@ -1,9 +1,10 @@
 package uff.grupo_3.uff_chamada.modules.attendance;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Optional;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -28,9 +29,20 @@ public class Attendance {
     private int classId;
     private LocalDateTime start;
     private LocalTime duration;
+    @Column(name = "latitude", nullable = true)
     private double latitude;
+    @Column(name = "logitude", nullable = true)
     private double longitude;
+    @Column(name = "radius", nullable = true)
     private double radius;
     @Enumerated(EnumType.STRING)
     private AttendanceStatus status;
+
+    public Attendance(int id, int classId, LocalDateTime start, LocalTime duration, AttendanceStatus status){
+        this.id = id;
+        this.classId = classId;
+        this.start = start;
+        this.duration = duration;
+        this.status = status;
+    }
 }
