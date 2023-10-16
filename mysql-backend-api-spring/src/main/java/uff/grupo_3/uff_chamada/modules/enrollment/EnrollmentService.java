@@ -39,36 +39,45 @@ public class EnrollmentService {
     //     return enrollmentRepository.findStudentEnrollments(studentId).orElseGet(() -> new ArrayList<StudentEnrollmentResponseDto>());
     // }
 
-    public StudentEnrollmentListDto getStudentEnrollments(int studentId){
-        User user = userRepository.findById(studentId).orElseThrow(() -> new IllegalStateException("nao existe usuario"));
-        List<Enrollment> enrollments = enrollmentRepository.findByStudentId(studentId).orElseGet(() -> new ArrayList<Enrollment>());
+    public StudentEnrollmentListDto getStudentEnrollments(int studentId, String year, int semester){
+        try {
+            User user = userRepository.findById(studentId).orElseThrow(() -> new IllegalStateException("nao existe usuario"));
+            Semester currentSemester = this.semesterRepository.findSemesterByYearAndSemester(year, semester).orElseThrow(() -> new IllegalStateException("semestre com ano ou semestre invalidos"));
+            List<Enrollment> enrollments = enrollmentRepository.findByStudentId(studentId).orElseGet(() -> new ArrayList<Enrollment>());
 
-        StudentEnrollmentListDto enrollmentsDto = new StudentEnrollmentListDto();
-        
-        for (Enrollment enrollment : enrollments){
+            StudentEnrollmentListDto enrollmentsDto = new StudentEnrollmentListDto();
             
-            Class _class = classRepository.findById(enrollment.getClassId()).orElseThrow(() -> new IllegalStateException("classe não existe"));
-            User professor = this.userRepository.findById(_class.getProfessorId()).get();
-            Semester semester = this.semesterRepository.findById(_class.getSemesterId()).get();
-            
-            StudentEnrollmentListItemDto enrollmentItem = new StudentEnrollmentListItemDto(
-                enrollment.getId(),
-                _class.getId(),
-                _class.getName(),
-                _class.getSubjectName(),
-                _class.getSchedule(),
-                professor.getId(),
-                professor.getName(),
-                semester.getId(),
-                semester.getYear(),
-                semester.getSemester(),
-                false
-            );
+            for (Enrollment enrollment : enrollments){
+                
+                Class _class = classRepository.findById(enrollment.getClassId()).orElseThrow(() -> new IllegalStateException("classe não existe"));
+                User professor = this.userRepository.findById(_class.getProfessorId()).get();
 
-            enrollmentsDto.getEnrollments().add(enrollmentItem);
-        }
+                Semester classSemester = this.semesterRepository.findById(_class.getSemesterId()).get();
+
+                if (currentSemester.getId() == classSemester.getId()){
+                    StudentEnrollmentListItemDto enrollmentItem = new StudentEnrollmentListItemDto(
+                        enrollment.getId(),
+                        _class.getId(),
+                        _class.getName(),
+                        _class.getSubjectName(),
+                        _class.getSchedule(),
+                        professor.getId(),
+                        professor.getName(),
+                        currentSemester.getId(),
+                        currentSemester.getYear(),
+                        currentSemester.getSemester(),
+                        false
+                    );
+
+                    enrollmentsDto.getEnrollments().add(enrollmentItem);
+                }
+            }
 
         return enrollmentsDto;
+        } catch (Exception e) {
+            return null;
+        }
+
     }
 
     public void createEnrollment(Enrollment enrollment){
