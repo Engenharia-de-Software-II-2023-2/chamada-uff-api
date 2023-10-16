@@ -8,7 +8,10 @@ import org.springframework.stereotype.Service;
 
 import uff.grupo_3.uff_chamada.modules._class.Class;
 import uff.grupo_3.uff_chamada.modules._class.ClassRepository;
-import uff.grupo_3.uff_chamada.modules.enrollment.dto.response.StudentEnrollmentResponseDto;
+import uff.grupo_3.uff_chamada.modules.enrollment.dto.response.StudentEnrollmentListDto;
+import uff.grupo_3.uff_chamada.modules.enrollment.dto.response.StudentEnrollmentListItemDto;
+import uff.grupo_3.uff_chamada.modules.semester.Semester;
+import uff.grupo_3.uff_chamada.modules.semester.SemesterRepository;
 import uff.grupo_3.uff_chamada.modules.user.User;
 import uff.grupo_3.uff_chamada.modules.user.UserRepository;
 
@@ -18,12 +21,14 @@ public class EnrollmentService {
     private EnrollmentRepository enrollmentRepository;
     private UserRepository userRepository;
     private ClassRepository classRepository;
+    private SemesterRepository semesterRepository;
 
     @Autowired
-    public EnrollmentService(EnrollmentRepository enrollmentRepository, UserRepository userRepository, ClassRepository classRepository){
+    public EnrollmentService(EnrollmentRepository enrollmentRepository, UserRepository userRepository, ClassRepository classRepository, SemesterRepository semesterRepository){
         this.enrollmentRepository = enrollmentRepository;
         this.userRepository = userRepository;
         this.classRepository = classRepository;
+        this.semesterRepository = semesterRepository;
     }
 
     // public List<Enrollment> getStudentEnrollments(int studentId){
@@ -34,26 +39,33 @@ public class EnrollmentService {
     //     return enrollmentRepository.findStudentEnrollments(studentId).orElseGet(() -> new ArrayList<StudentEnrollmentResponseDto>());
     // }
 
-    public List<StudentEnrollmentResponseDto> getStudentEnrollments(int studentId){
+    public StudentEnrollmentListDto getStudentEnrollments(int studentId){
         User user = userRepository.findById(studentId).orElseThrow(() -> new IllegalStateException("nao existe usuario"));
         List<Enrollment> enrollments = enrollmentRepository.findByStudentId(studentId).orElseGet(() -> new ArrayList<Enrollment>());
 
-        List<StudentEnrollmentResponseDto> enrollmentsDto = new ArrayList<>();
+        StudentEnrollmentListDto enrollmentsDto = new StudentEnrollmentListDto();
         
         for (Enrollment enrollment : enrollments){
             
             Class _class = classRepository.findById(enrollment.getClassId()).orElseThrow(() -> new IllegalStateException("classe não existe"));
+            User professor = this.userRepository.findById(_class.getProfessorId()).get();
+            Semester semester = this.semesterRepository.findById(_class.getSemesterId()).get();
             
-            StudentEnrollmentResponseDto enrollmentResponseDto = new StudentEnrollmentResponseDto(
+            StudentEnrollmentListItemDto enrollmentItem = new StudentEnrollmentListItemDto(
                 enrollment.getId(),
-                enrollment.getStudentId(),
-                user.getName(),
-                enrollment.getClassId(),
+                _class.getId(),
                 _class.getName(),
-                enrollment.getCreatedAt()
+                _class.getSubjectName(),
+                _class.getSchedule(),
+                professor.getId(),
+                professor.getName(),
+                semester.getId(),
+                semester.getYear(),
+                semester.getSemester(),
+                false
             );
 
-            enrollmentsDto.add(enrollmentResponseDto);
+            enrollmentsDto.getEnrollments().add(enrollmentItem);
         }
 
         return enrollmentsDto;

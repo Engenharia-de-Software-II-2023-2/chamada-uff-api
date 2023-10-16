@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import uff.grupo_3.uff_chamada.modules.enrollment.dto.request.StudentEnrollmentsRequestDto;
-import uff.grupo_3.uff_chamada.modules.enrollment.dto.response.StudentEnrollmentResponseDto;
+import uff.grupo_3.uff_chamada.modules.enrollment.dto.response.StudentEnrollmentListDto;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -45,12 +45,12 @@ public class EnrollmentController {
 
     @PostMapping("/getStudentEnrollments")
     @ResponseBody
-    public ResponseEntity<List<StudentEnrollmentResponseDto>> getStudentEnrollments(
+    public ResponseEntity getStudentEnrollments(
             @RequestBody StudentEnrollmentsRequestDto request) {
                 try{
                     return ResponseEntity.ok().body(enrollmentService.getStudentEnrollments(request.studentId()));
                 } catch (Exception e){
-                    return ResponseEntity.badRequest().build();
+                    return ResponseEntity.badRequest().body(e.getMessage());
                 }
     }
 
