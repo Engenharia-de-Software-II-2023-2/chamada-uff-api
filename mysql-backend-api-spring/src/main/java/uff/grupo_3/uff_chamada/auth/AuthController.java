@@ -37,10 +37,11 @@ public class AuthController {
     public ResponseEntity login(@RequestBody LoginRequest request){
         var usernamePassword = new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword());
         var auth = this.authenticationManager.authenticate(usernamePassword);
+        var user = this.userRepository.findUserByUsername(request.getUsername());
         
         var token = tokenService.generateToken((User) auth.getPrincipal());
         
-        return ResponseEntity.ok(new LoginResponse(token));
+        return ResponseEntity.ok(new LoginResponse(token, user.getId()));
     }
 
     @PostMapping("/register")
