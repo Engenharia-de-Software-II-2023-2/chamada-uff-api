@@ -1,32 +1,27 @@
 package uff.grupo_3.uff_chamada.modules._class;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import uff.grupo_3.uff_chamada.modules._class.dto.response.CurrentProfessorClassesResponseDto;
+import uff.grupo_3.uff_chamada.modules._class.dto.response.ProfessorClassesListItemResponseDto;
+import uff.grupo_3.uff_chamada.modules._class.dto.response.ProfessorClassesListResponseDto;
 import uff.grupo_3.uff_chamada.modules.semester.Semester;
 import uff.grupo_3.uff_chamada.modules.semester.SemesterRepository;
-import uff.grupo_3.uff_chamada.modules.user.User;
 import uff.grupo_3.uff_chamada.modules.user.UserRepository;
 
 @Service
 public class ClassService {
     private final ClassRepository classRepository;
-    private final UserRepository userRepository;
     private final SemesterRepository semesterRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public ClassService(
-        ClassRepository classRepository,
-        UserRepository userRepository,
-        SemesterRepository semesterRepository
-    ){
+    public ClassService(ClassRepository classRepository, SemesterRepository semesterRepository, UserRepository userRepository){
         this.classRepository = classRepository;
-        this.userRepository = userRepository;
         this.semesterRepository = semesterRepository;
+        this.userRepository = userRepository;
     }
 
     public Class getClass(int id){
@@ -46,25 +41,45 @@ public class ClassService {
         this.classRepository.deleteById(id);
     }
 
-    public CurrentProfessorClassesResponseDto currentProfessorClasses(String year, int semester, String professorName){
-        CurrentProfessorClassesResponseDto professorClasses = new CurrentProfessorClassesResponseDto();
+    public ProfessorClassesListResponseDto professorClasses(int professorId, String year, int semester){
 
-        List<Class> classes = classRepository.findAll();
-        List<Semester> semesters = semesterRepository.findByYear(year).orElseGet(() -> new ArrayList<>());
-        List<User> professors = userRepository.findByName(professorName).orElseGet(() -> new ArrayList<>());
-
-        for (Class c : classes){
-            for (Semester s : semesters) {
-                for (User p : professors ) {
-
-                    if (c.getSemesterId() == s.getId() && c.getProfessorId() == p.getId()) {
-                        if (s.getSemester() == semester && p.getName().equals(professorName)){
-                            professorClasses.getClasses().add(c);
-                        }
-                    }
-                }
-            }
+        if (userRepository.findById(professorId).isEmpty()){
+            return null;
         }
-        return professorClasses;
+
+        try {
+            List<Class> professorClasses = this.classRepository.findClassByProfessorId(professorId);
+            Semester currentSemester = semesterRepository.findSemesterByYearAndSemester(year, semester).orElseThrow(() -> new IllegalStateException("ano ou semestre invalidos"));
+
+            ProfessorClassesListResponseDto professorClassesDto = new ProfessorClassesListResponseDto();
+
+            for (Class _class : professorClasses){
+
+                Semester classSemester = semesterRepository.findById(_class.getSemesterId()).get();
+
+                if (currentSemester.getId() == classSemester.getId()){
+
+                    ProfessorClassesListItemResponseDto item = new ProfessorClassesListItemResponseDto(
+                        _class.getId(),
+                        _class.getName(),
+                        _class.getSubjectName(),
+                        _class.getSchedule(),
+                        currentSemester.getId(),
+                        currentSemester.getYear(),
+                        currentSemester.getSemester(),
+                        false
+                    );
+                    professorClassesDto.getProfessorClasses().add(item);
+                }
+
+
+            }
+
+            return professorClassesDto;
+        } catch (Exception e){
+            return null;
+        }
+        
+        
     }
 }

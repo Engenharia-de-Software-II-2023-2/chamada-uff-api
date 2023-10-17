@@ -35,18 +35,13 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody LoginRequest request){
-        try {
-            var usernamePassword = new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword());
-            var auth = this.authenticationManager.authenticate(usernamePassword);
-            User user = userRepository.findUserByUsername(request.getUsername()).orElseThrow(() -> new IllegalStateException("usuário ou senha incorretos"));
-            
-            var token = tokenService.generateToken((User) auth.getPrincipal());
-            
-            return ResponseEntity.ok(new LoginResponse(user.getId(), token));
-
-        } catch (Exception e){
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        var usernamePassword = new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword());
+        var auth = this.authenticationManager.authenticate(usernamePassword);
+        var user = this.userRepository.findUserByUsername(request.getUsername());
+        
+        var token = tokenService.generateToken((User) auth.getPrincipal());
+        
+        return ResponseEntity.ok(new LoginResponse(token, user.getId(), user.getRole()));
     }
 
     @PostMapping("/register")

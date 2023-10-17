@@ -8,11 +8,8 @@ import org.springframework.stereotype.Service;
 
 import uff.grupo_3.uff_chamada.modules._class.Class;
 import uff.grupo_3.uff_chamada.modules._class.ClassRepository;
-import uff.grupo_3.uff_chamada.modules.attendance.Attendance;
-import uff.grupo_3.uff_chamada.modules.attendance.AttendanceRepository;
-import uff.grupo_3.uff_chamada.modules.attendance.AttendanceStatus;
-import uff.grupo_3.uff_chamada.modules.enrollment.dto.response.StudentEnrollmentResponseListDto;
-import uff.grupo_3.uff_chamada.modules.enrollment.dto.response.StudentEnrollmentResponseListItemDto;
+import uff.grupo_3.uff_chamada.modules.enrollment.dto.response.StudentEnrollmentListDto;
+import uff.grupo_3.uff_chamada.modules.enrollment.dto.response.StudentEnrollmentListItemDto;
 import uff.grupo_3.uff_chamada.modules.semester.Semester;
 import uff.grupo_3.uff_chamada.modules.semester.SemesterRepository;
 import uff.grupo_3.uff_chamada.modules.user.User;
@@ -34,35 +31,53 @@ public class EnrollmentService {
         this.semesterRepository = semesterRepository;
     }
 
-    public StudentEnrollmentResponseListDto getStudentEnrollments(int studentId){
-        StudentEnrollmentResponseListDto enrollmentsList = new StudentEnrollmentResponseListDto();
+    // public StudentEnrollmentResponseListDto getStudentEnrollments(int studentId){
+    //     StudentEnrollmentResponseListDto enrollmentsList = new StudentEnrollmentResponseListDto();
 
-        List<Enrollment> enrollments = enrollmentRepository.findByStudentId(studentId).orElseGet(() -> new ArrayList<Enrollment>());
+    // public List<StudentEnrollmentResponseDto> getStudentEnrollments(int studentId){
+    //     return enrollmentRepository.findStudentEnrollments(studentId).orElseGet(() -> new ArrayList<StudentEnrollmentResponseDto>());
+    // }
 
-        for (Enrollment enrollment : enrollments){
+    public StudentEnrollmentListDto getStudentEnrollments(int studentId, String year, int semester){
+        try {
+            User user = userRepository.findById(studentId).orElseThrow(() -> new IllegalStateException("nao existe usuario"));
+            Semester currentSemester = this.semesterRepository.findSemesterByYearAndSemester(year, semester).orElseThrow(() -> new IllegalStateException("semestre com ano ou semestre invalidos"));
+            List<Enrollment> enrollments = enrollmentRepository.findByStudentId(studentId).orElseGet(() -> new ArrayList<Enrollment>());
 
-            Class _class = classRepository.findById(enrollment.getClassId()).orElseThrow(() -> new IllegalStateException("classe não existe"));
-            User professor = userRepository.findById(_class.getId()).get();
-            Semester semester = semesterRepository.findById(_class.getId()).get();
+            StudentEnrollmentListDto enrollmentsDto = new StudentEnrollmentListDto();
+            
+            for (Enrollment enrollment : enrollments){
+                
+                Class _class = classRepository.findById(enrollment.getClassId()).orElseThrow(() -> new IllegalStateException("classe não existe"));
+                User professor = this.userRepository.findById(_class.getProfessorId()).get();
 
-            StudentEnrollmentResponseListItemDto enrollmentItem = new StudentEnrollmentResponseListItemDto(
-                enrollment.getId(),
-                _class.getId(),
-                _class.getName(),
-                _class.getSubjectName(),
-                _class.getProfessorId(),
-                professor.getName(),
-                semester.getId(),
-                semester.getYear(),
-                semester.getSemester()
-            );
+                Semester classSemester = this.semesterRepository.findById(_class.getSemesterId()).get();
 
-            enrollmentsList.getEnrollments().add(enrollmentItem);
+                if (currentSemester.getId() == classSemester.getId()){
+                    StudentEnrollmentListItemDto enrollmentItem = new StudentEnrollmentListItemDto(
+                        enrollment.getId(),
+                        _class.getId(),
+                        _class.getName(),
+                        _class.getSubjectName(),
+                        _class.getSchedule(),
+                        professor.getId(),
+                        professor.getName(),
+                        currentSemester.getId(),
+                        currentSemester.getYear(),
+                        currentSemester.getSemester(),
+                        false
+                    );
 
+                    enrollmentsDto.getEnrollments().add(enrollmentItem);
+                }
+            }
+
+        return enrollmentsDto;
+        } catch (Exception e) {
+            return null;
         }
-        
-            return enrollmentsList;
-        }
+
+    }
 
     public void createEnrollment(Enrollment enrollment){
         enrollmentRepository.save(enrollment);

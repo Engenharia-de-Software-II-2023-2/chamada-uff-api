@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import uff.grupo_3.uff_chamada.modules.enrollment.dto.request.StudentEnrollmentsRequestDto;
-import uff.grupo_3.uff_chamada.modules.enrollment.dto.response.StudentEnrollmentResponseListDto;
+import uff.grupo_3.uff_chamada.modules.enrollment.dto.response.StudentEnrollmentListDto;
+
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Tag(name = "Enrollment", description = "Enrollment Requests")
@@ -46,11 +47,15 @@ public class EnrollmentController {
     @ResponseBody
     public ResponseEntity getStudentEnrollments(
             @RequestBody StudentEnrollmentsRequestDto request) {
-                try{
-                    return ResponseEntity.ok().body(enrollmentService.getStudentEnrollments(request.studentId()));
-                } catch (Exception e){
-                    return ResponseEntity.badRequest().body(e.getMessage());
+
+                StudentEnrollmentListDto response = enrollmentService.getStudentEnrollments(request.getStudentId(), request.getYear(), request.getSemester());
+
+                if (response != null){
+                    return ResponseEntity.ok().body(response);
                 }
+
+                return ResponseEntity.badRequest().body("parametros invalidos");
+            
     }
 
     @PostMapping("/createEnrollment")

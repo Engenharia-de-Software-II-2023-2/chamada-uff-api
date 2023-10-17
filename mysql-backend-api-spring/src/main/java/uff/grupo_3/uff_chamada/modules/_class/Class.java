@@ -21,4 +21,5 @@ public class Class {
     private String subjectName;
     private int professorId;
     private int semesterId;
+    private String schedule;
 }
