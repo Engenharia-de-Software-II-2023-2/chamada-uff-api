@@ -1,6 +1,8 @@
 package uff.grupo_3.uff_chamada.modules.attendance;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +25,8 @@ public class AttendanceController {
         this.attendanceService = attendanceService;
     }
 
+    //ROLE_ADMIN == PROFESSOR
+    //ROLE_USER == STUDENT
 
     @GetMapping(path = "/getAttendance/{id}", produces = "application/json")
     @ResponseBody
@@ -30,26 +34,44 @@ public class AttendanceController {
         return this.attendanceService.getAttendance(id);
     }
 
-    @PostMapping(path = "/createAttendance", produces = "aplication/json")
-    public ResponseEntity<Void> createAttedance(@RequestBody Attendance attendance){
-        this.attendanceService.createAttedance(attendance);
-        return ResponseEntity.ok().build();
+    @PostMapping(path = "/createAttendance/{classId}", produces = "aplication/json")
+    public ResponseEntity<Void> createAttendance(@PathVariable("classId") int classId, @AuthenticationPrincipal UserDetails userDetails){
+        String userRole = userDetails.getAuthorities().iterator().next().getAuthority();
+        if("ROLE_ADMIN".equals(userRole)){
+            this.attendanceService.createAttendance(classId);
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.badRequest().build();
     }
 
     @PutMapping(path = "/updateAttendance", produces = "aplication/json")
-    public ResponseEntity<Void> updateAttendance(@RequestBody Attendance attendance){
-        this.attendanceService.updateAttendance(attendance);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Void> updateAttendance(@RequestBody Attendance attendance, @AuthenticationPrincipal UserDetails userDetails){
+        String userRole = userDetails.getAuthorities().iterator().next().getAuthority();
+        if("ROLE_ADMIN".equals(userRole)){
+            this.attendanceService.updateAttendance(attendance);
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.badRequest().build();
+    }
+
+    @PutMapping(path = "/controlAttendance", produces = "aplication/json")
+    public ResponseEntity<Void> controlAttendance(@RequestBody Attendance attendance, @AuthenticationPrincipal UserDetails userDetails){
+        String userRole = userDetails.getAuthorities().iterator().next().getAuthority();
+        if("ROLE_ADMIN".equals(userRole)){
+            this.attendanceService.controlAttendance(attendance);
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.badRequest().build();
     }
 
     @DeleteMapping(path = "/deleteAttendance/{id}", produces = "aplication/json")
-    public void deleteAttendance(@PathVariable("id") int id){
-        this.attendanceService.deleteAttendance(id);
+    public ResponseEntity<Void> deleteAttendance(@PathVariable("id") int id, @AuthenticationPrincipal UserDetails userDetails){
+        String userRole = userDetails.getAuthorities().iterator().next().getAuthority();
+        if("ROLE_ADMIN".equals(userRole)){
+            this.attendanceService.deleteAttendance(id);
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.badRequest().build();
     }
 
-    // TODO: criar endpoint para criar chamada, por default cria com status WAITING
-
-    // TODO: criar endpoint para abrir chamada: body só com id (fazer validação se chamada existe) e só mudar stautus de chamada para ACTIVE
-
-    // TODO: criar endpoint para fechar chamada: body só com id (fazer validação se chamada existe) e só mudar stautus de chamada para OVER
 }

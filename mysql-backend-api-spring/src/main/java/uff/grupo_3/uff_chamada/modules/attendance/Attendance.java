@@ -1,7 +1,6 @@
 package uff.grupo_3.uff_chamada.modules.attendance;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -24,7 +23,9 @@ public class Attendance {
     private int id;
     private int classId;
     private LocalDateTime start;
-    private LocalTime duration;
+    private Long duration; // minutes
     @Enumerated(EnumType.STRING)
     private Status status;
+    private Double latitude;
+    private Double longitude;
 }
