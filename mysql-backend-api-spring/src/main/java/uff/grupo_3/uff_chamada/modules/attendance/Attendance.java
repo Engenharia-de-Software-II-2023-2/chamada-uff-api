@@ -15,11 +15,13 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 @SequenceGenerator(name = "attendance_id_sequence", sequenceName = "attendance_id_sequence", allocationSize = 1, initialValue = 4)
 public class Attendance {
     
@@ -29,20 +31,20 @@ public class Attendance {
     private int classId;
     private LocalDateTime start;
     private LocalTime duration;
-    @Column(name = "latitude", nullable = true)
-    private double latitude;
-    @Column(name = "logitude", nullable = true)
-    private double longitude;
-    @Column(name = "radius", nullable = true)
-    private double radius;
+    // @Column(unique = true, nullable = false)
+    private Double latitude;
+    // @Column(unique = true, nullable = true)
+    private Double longitude;
+    // @Column(unique = true, nullable = true)
+    private Double radius;
     @Enumerated(EnumType.STRING)
     private AttendanceStatus status;
 
-    public Attendance(int id, int classId, LocalDateTime start, LocalTime duration, AttendanceStatus status){
-        this.id = id;
-        this.classId = classId;
-        this.start = start;
-        this.duration = duration;
-        this.status = status;
-    }
+    // public Attendance(int id, int classId, LocalDateTime start, LocalTime duration, AttendanceStatus status){
+    //     this.id = id;
+    //     this.classId = classId;
+    //     this.start = start;
+    //     this.duration = duration;
+    //     this.status = status;
+    // }
 }

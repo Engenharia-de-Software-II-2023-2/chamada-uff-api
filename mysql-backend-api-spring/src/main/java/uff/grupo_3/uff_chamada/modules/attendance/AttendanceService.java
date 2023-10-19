@@ -1,5 +1,7 @@
 package uff.grupo_3.uff_chamada.modules.attendance;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,6 +40,14 @@ public class AttendanceService {
         attendance.setStatus(AttendanceStatus.ACTIVE);
         attendanceRepository.save(attendance);
         return attendance;
+    }
+
+    public List<Attendance> getActiveAttendances(int id){
+        return attendanceRepository.findOpenAttendances(id);
+    }
+
+    public List<Attendance> getAttendancesByClassId(int id){
+        return attendanceRepository.findByClassId(id);
     }
 
 }

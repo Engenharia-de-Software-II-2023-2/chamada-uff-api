@@ -1,5 +1,7 @@
 package uff.grupo_3.uff_chamada.modules.attendance;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -56,6 +58,20 @@ public class AttendanceController {
     public ResponseEntity<Attendance> createActiveAttendance(@RequestBody Attendance attendance){
         return ResponseEntity.ok(attendanceService.createActiveAttendance(attendance));
     }
+
+    @GetMapping(path = "/getActiveAttendances/{id}")
+    @ResponseBody
+    public List<Attendance> getActiveAttendances(@PathVariable("id") int id){
+        return this.attendanceService.getActiveAttendances(id);
+    }
+
+    @GetMapping(path = "/findAttendancesByClassId/{id}")
+    @ResponseBody
+    public List<Attendance> findAttendancesByClassId(@PathVariable("id") int id ){
+        return this.attendanceService.getAttendancesByClassId(id);
+    }
+
+
 
     // TODO: criar endpoint para criar chamada, por default cria com status WAITING
 
