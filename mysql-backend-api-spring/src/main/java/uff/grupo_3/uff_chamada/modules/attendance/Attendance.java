@@ -1,8 +1,6 @@
 package uff.grupo_3.uff_chamada.modules.attendance;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;

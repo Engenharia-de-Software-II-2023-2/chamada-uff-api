@@ -30,9 +30,14 @@ public class ResponseController {
     }
 
     @PostMapping(path = "/createResponse")
-    public ResponseEntity<Void> createResponse(@RequestBody Response response){
-        this.responseService.createResponse(response);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<String> createResponse(@RequestBody Response response){
+        boolean result = this.responseService.createResponse(response);
+        if(result){
+            return ResponseEntity.ok().build();
+        }
+        else{
+            return ResponseEntity.badRequest().body("Chamada fechada");
+        }
     }
 
     // TODO: Criar endpoint especifico para registrar presença: com validação de se a chamada esta com status ACTIVE e se já m foi registrada a presença do aluno
