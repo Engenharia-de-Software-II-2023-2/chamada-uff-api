@@ -18,4 +18,5 @@ public class StudentEnrollmentListItemDto {
     private String year;
     private int semester;
     private boolean isActive;
+    private Integer attendanceId;
 }

@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import uff.grupo_3.uff_chamada.modules._class.dto.response.ProfessorClassesListItemResponseDto;
 import uff.grupo_3.uff_chamada.modules._class.dto.response.ProfessorClassesListResponseDto;
+import uff.grupo_3.uff_chamada.modules.attendance.Attendance;
+import uff.grupo_3.uff_chamada.modules.attendance.AttendanceRepository;
 import uff.grupo_3.uff_chamada.modules.semester.Semester;
 import uff.grupo_3.uff_chamada.modules.semester.SemesterRepository;
 import uff.grupo_3.uff_chamada.modules.user.UserRepository;
@@ -16,12 +18,14 @@ public class ClassService {
     private final ClassRepository classRepository;
     private final SemesterRepository semesterRepository;
     private final UserRepository userRepository;
+    private final AttendanceRepository attendanceRepository;
 
     @Autowired
-    public ClassService(ClassRepository classRepository, SemesterRepository semesterRepository, UserRepository userRepository){
+    public ClassService(ClassRepository classRepository, SemesterRepository semesterRepository, UserRepository userRepository, AttendanceRepository attendanceRepository){
         this.classRepository = classRepository;
         this.semesterRepository = semesterRepository;
         this.userRepository = userRepository;
+        this.attendanceRepository = attendanceRepository;
     }
 
     public Class getClass(int id){
@@ -50,12 +54,14 @@ public class ClassService {
         try {
             List<Class> professorClasses = this.classRepository.findClassByProfessorId(professorId);
             Semester currentSemester = semesterRepository.findSemesterByYearAndSemester(year, semester).orElseThrow(() -> new IllegalStateException("ano ou semestre invalidos"));
-
             ProfessorClassesListResponseDto professorClassesDto = new ProfessorClassesListResponseDto();
 
             for (Class _class : professorClasses){
 
                 Semester classSemester = semesterRepository.findById(_class.getSemesterId()).get();
+                List<Attendance> openAttendances = attendanceRepository.findOpenAttendances(_class.getId());
+
+                boolean isActive = openAttendances.size() != 0;
 
                 if (currentSemester.getId() == classSemester.getId()){
 
@@ -67,7 +73,8 @@ public class ClassService {
                         currentSemester.getId(),
                         currentSemester.getYear(),
                         currentSemester.getSemester(),
-                        false
+                        isActive,
+                        isActive == true ? openAttendances.get(0).getId() : null
                     );
                     professorClassesDto.getProfessorClasses().add(item);
                 }

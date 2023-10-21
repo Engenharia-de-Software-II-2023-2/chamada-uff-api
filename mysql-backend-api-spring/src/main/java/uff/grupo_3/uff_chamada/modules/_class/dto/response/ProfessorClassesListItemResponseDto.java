@@ -15,4 +15,5 @@ public class ProfessorClassesListItemResponseDto {
     private String year;
     private int semester;
     private boolean isActive;
+    private Integer attendanceid;
 }

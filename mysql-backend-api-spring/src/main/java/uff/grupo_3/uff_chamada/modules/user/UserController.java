@@ -1,6 +1,7 @@
 package uff.grupo_3.uff_chamada.modules.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -26,8 +27,8 @@ public class UserController {
     }
 
     @GetMapping("/name/{name}")
-    public User getUserByName(@PathVariable String name){
-        return userService.getUserByName(name);
+    public ResponseEntity<List<User>> getUserByName(@PathVariable String name){
+        return ResponseEntity.ok().body(userService.getUserByName(name));
     }
 
     @GetMapping()
