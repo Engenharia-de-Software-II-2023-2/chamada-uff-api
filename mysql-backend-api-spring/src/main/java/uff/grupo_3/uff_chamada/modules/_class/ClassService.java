@@ -74,7 +74,7 @@ public class ClassService {
                         currentSemester.getYear(),
                         currentSemester.getSemester(),
                         isActive,
-                        isActive == true ? openAttendances.get(0).getId() : 0
+                        isActive == true ? openAttendances.get(0).getId() : null
                     );
                     professorClassesDto.getProfessorClasses().add(item);
                 }

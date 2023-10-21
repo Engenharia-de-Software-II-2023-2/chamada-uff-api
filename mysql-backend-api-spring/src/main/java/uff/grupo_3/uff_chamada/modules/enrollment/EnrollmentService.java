@@ -74,7 +74,7 @@ public class EnrollmentService {
                         currentSemester.getYear(),
                         currentSemester.getSemester(),
                         isActive,
-                        isActive == true ? openAttendances.get(0).getId() : 0
+                        isActive == true ? openAttendances.get(0).getId() : null
                     );
 
                     enrollmentsDto.getEnrollments().add(enrollmentItem);
