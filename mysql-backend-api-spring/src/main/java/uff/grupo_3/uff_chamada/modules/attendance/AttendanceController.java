@@ -1,5 +1,7 @@
 package uff.grupo_3.uff_chamada.modules.attendance;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.transaction.Transactional;
 
 @Tag(name = "Attendance", description = "Attendance Requests")
 @RestController
@@ -72,6 +75,27 @@ public class AttendanceController {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.badRequest().build();
+    }
+    @PostMapping(path = "/createWaitingAttendance")
+    public ResponseEntity<Attendance> createWaitingAttendance(@RequestBody Attendance attendance){
+        return ResponseEntity.ok((attendanceService.createWaitingAttendance(attendance))); 
+    }
+
+    @PostMapping(path = "/createActiveAttendance")
+    public ResponseEntity<Attendance> createActiveAttendance(@RequestBody Attendance attendance){
+        return ResponseEntity.ok(attendanceService.createActiveAttendance(attendance));
+    }
+
+    @GetMapping(path = "/getActiveAttendances/{id}")
+    @ResponseBody
+    public List<Attendance> getActiveAttendances(@PathVariable("id") int id){
+        return this.attendanceService.getActiveAttendances(id);
+    }
+
+    @GetMapping(path = "/findAttendancesByClassId/{id}")
+    @ResponseBody
+    public List<Attendance> findAttendancesByClassId(@PathVariable("id") int id ){
+        return this.attendanceService.getAttendancesByClassId(id);
     }
 
 }
