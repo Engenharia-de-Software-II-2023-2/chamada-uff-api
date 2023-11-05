@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import uff.grupo_3.uff_chamada.modules.attendance.dto.request.CheckAttendanceStatusRequestDTO;
+import uff.grupo_3.uff_chamada.modules.attendance.dto.request.CreateAttendanceRequestDTO;
+import uff.grupo_3.uff_chamada.modules.attendance.dto.response.CheckAttendanceStatusResponseDTO;
 
 @Tag(name = "Attendance", description = "Attendance Requests")
 @RestController
@@ -23,33 +26,35 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class AttendanceController {
     private AttendanceService attendanceService;
 
-    public AttendanceController(AttendanceService attendanceService){
+    public AttendanceController(AttendanceService attendanceService) {
         this.attendanceService = attendanceService;
     }
 
-    //ROLE_ADMIN == PROFESSOR
-    //ROLE_USER == STUDENT
+    // ROLE_ADMIN == PROFESSOR
+    // ROLE_USER == STUDENT
 
     @GetMapping(path = "/getAttendance/{id}", produces = "application/json")
     @ResponseBody
-    public Attendance getAttendance(@PathVariable("id") int id){
+    public Attendance getAttendance(@PathVariable("id") int id) {
         return this.attendanceService.getAttendance(id);
     }
 
-    @PostMapping(path = "/createAttendance/{classId}", produces = "aplication/json")
-    public ResponseEntity<Void> createAttendance(@PathVariable("classId") int classId, @AuthenticationPrincipal UserDetails userDetails){
+    @PostMapping(path = "/createAttendance", produces = "aplication/json")
+    public ResponseEntity<Void> createAttendance(@RequestBody CreateAttendanceRequestDTO request,
+            @AuthenticationPrincipal UserDetails userDetails) {
         String userRole = userDetails.getAuthorities().iterator().next().getAuthority();
-        if("ROLE_ADMIN".equals(userRole)){
-            this.attendanceService.createAttendance(classId);
+        if ("ROLE_ADMIN".equals(userRole)) {
+            this.attendanceService.createAttendance(request.getClassId());
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.badRequest().build();
     }
 
     @PutMapping(path = "/updateAttendance", produces = "aplication/json")
-    public ResponseEntity<Void> updateAttendance(@RequestBody Attendance attendance, @AuthenticationPrincipal UserDetails userDetails){
+    public ResponseEntity<Void> updateAttendance(@RequestBody Attendance attendance,
+            @AuthenticationPrincipal UserDetails userDetails) {
         String userRole = userDetails.getAuthorities().iterator().next().getAuthority();
-        if("ROLE_ADMIN".equals(userRole)){
+        if ("ROLE_ADMIN".equals(userRole)) {
             this.attendanceService.updateAttendance(attendance);
             return ResponseEntity.ok().build();
         }
@@ -57,9 +62,10 @@ public class AttendanceController {
     }
 
     @PutMapping(path = "/controlAttendance", produces = "aplication/json")
-    public ResponseEntity<Void> controlAttendance(@RequestBody Attendance attendance, @AuthenticationPrincipal UserDetails userDetails){
+    public ResponseEntity<Void> controlAttendance(@RequestBody Attendance attendance,
+            @AuthenticationPrincipal UserDetails userDetails) {
         String userRole = userDetails.getAuthorities().iterator().next().getAuthority();
-        if("ROLE_ADMIN".equals(userRole)){
+        if ("ROLE_ADMIN".equals(userRole)) {
             this.attendanceService.controlAttendance(attendance);
             return ResponseEntity.ok().build();
         }
@@ -67,34 +73,51 @@ public class AttendanceController {
     }
 
     @DeleteMapping(path = "/deleteAttendance/{id}", produces = "aplication/json")
-    public ResponseEntity<Void> deleteAttendance(@PathVariable("id") int id, @AuthenticationPrincipal UserDetails userDetails){
+    public ResponseEntity<Void> deleteAttendance(@PathVariable("id") int id,
+            @AuthenticationPrincipal UserDetails userDetails) {
         String userRole = userDetails.getAuthorities().iterator().next().getAuthority();
-        if("ROLE_ADMIN".equals(userRole)){
+        if ("ROLE_ADMIN".equals(userRole)) {
             this.attendanceService.deleteAttendance(id);
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.badRequest().build();
     }
+
     @PostMapping(path = "/createWaitingAttendance")
-    public ResponseEntity<Attendance> createWaitingAttendance(@RequestBody Attendance attendance){
-        return ResponseEntity.ok((attendanceService.createWaitingAttendance(attendance))); 
+    public ResponseEntity<Attendance> createWaitingAttendance(@RequestBody Attendance attendance) {
+        return ResponseEntity.ok((attendanceService.createWaitingAttendance(attendance)));
     }
 
     @PostMapping(path = "/createActiveAttendance")
-    public ResponseEntity<Attendance> createActiveAttendance(@RequestBody Attendance attendance){
+    public ResponseEntity<Attendance> createActiveAttendance(@RequestBody Attendance attendance) {
         return ResponseEntity.ok(attendanceService.createActiveAttendance(attendance));
     }
 
     @GetMapping(path = "/getActiveAttendances/{id}")
     @ResponseBody
-    public List<Attendance> getActiveAttendances(@PathVariable("id") int id){
+    public List<Attendance> getActiveAttendances(@PathVariable("id") int id) {
         return this.attendanceService.getActiveAttendances(id);
     }
 
     @GetMapping(path = "/findAttendancesByClassId/{id}")
     @ResponseBody
-    public List<Attendance> findAttendancesByClassId(@PathVariable("id") int id ){
+    public List<Attendance> findAttendancesByClassId(@PathVariable("id") int id) {
         return this.attendanceService.getAttendancesByClassId(id);
     }
 
+    @PostMapping(path = "/checkAttendanceStatus")
+    public ResponseEntity<CheckAttendanceStatusResponseDTO> checkAttendanceStatus(
+            @RequestBody CheckAttendanceStatusRequestDTO request) {
+        try {
+            Attendance attendance = attendanceService.checkAttendanceStatus(request.getAttendanceId());
+            
+            Double responseLatitude = attendance.getStatus() == AttendanceStatus.ACTIVE ? attendance.getLatitude() : null; 
+            Double responseLongitute = attendance.getStatus() == AttendanceStatus.ACTIVE ? attendance.getLongitude() : null; 
+            Double responseRadius = attendance.getStatus() == AttendanceStatus.ACTIVE ? attendance.getRadius() : null; 
+
+            return ResponseEntity.ok().body(new CheckAttendanceStatusResponseDTO(attendance.getStatus() == AttendanceStatus.ACTIVE, responseLatitude, responseLongitute, responseRadius));
+        }catch (Exception e){
+            return ResponseEntity.badRequest().build();
+        }
+    }
 }

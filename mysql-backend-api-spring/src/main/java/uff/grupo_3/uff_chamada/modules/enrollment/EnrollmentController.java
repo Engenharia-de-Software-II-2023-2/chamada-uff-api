@@ -11,8 +11,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import uff.grupo_3.uff_chamada.modules.enrollment.dto.request.StudentEnrollmentsRequestDto;
+import uff.grupo_3.uff_chamada.modules.enrollment.dto.request.studentRecordRequestDTO;
 import uff.grupo_3.uff_chamada.modules.enrollment.dto.response.StudentEnrollmentListDto;
-
+import uff.grupo_3.uff_chamada.modules.enrollment.dto.response.StudentRecordList;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Tag(name = "Enrollment", description = "Enrollment Requests")
@@ -64,5 +65,14 @@ public class EnrollmentController {
     @DeleteMapping("/deleteEnrollment/{id}")
     public void deleteEnrollment(@PathVariable("id") int id) {
         this.enrollmentService.deleteEnrollment(id);
+    }
+
+    @PostMapping(path = "/checkStudentAttendanceRecord")
+    public ResponseEntity<StudentRecordList> checkStudentAttendanceRecord(@RequestBody studentRecordRequestDTO request){
+        try {
+            return ResponseEntity.ok().body(enrollmentService.checkStudentAttendanceRecord(request.getStudentId(), request.getClassId()));
+        }catch (Exception e){
+            return ResponseEntity.badRequest().build();
+        }
     }
 }
