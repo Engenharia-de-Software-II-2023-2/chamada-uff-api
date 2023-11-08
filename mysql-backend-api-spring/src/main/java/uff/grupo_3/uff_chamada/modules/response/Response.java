@@ -21,5 +21,5 @@ public class Response {
     private int attendanceId;
     private LocalDateTime start;
     private LocalDateTime end;
-
+    private boolean valid;
 }

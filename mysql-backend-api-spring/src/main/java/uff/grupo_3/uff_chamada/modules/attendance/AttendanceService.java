@@ -81,4 +81,7 @@ public class AttendanceService {
         return attendanceRepository.findByClassId(id);
     }
 
+    public Attendance checkAttendanceStatus(int attendanceId) throws Exception{
+        return attendanceRepository.findById(attendanceId).orElseThrow(() ->  new IllegalStateException("chamada de id " + attendanceId + "não existe"));
+    }
 }
