@@ -7,6 +7,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import uff.grupo_3.uff_chamada.modules.attendance.dto.response.AttendancesByClassResponseDTO;
+
 @Service
 public class AttendanceService {
     private AttendanceRepository attendanceRepository;
@@ -79,6 +81,10 @@ public class AttendanceService {
 
     public List<Attendance> getAttendancesByClassId(int id){
         return attendanceRepository.findByClassId(id);
+    }
+
+    public AttendancesByClassResponseDTO findAttendancesByClass(int classId){
+        return new AttendancesByClassResponseDTO(attendanceRepository.findByClassId(classId));
     }
 
     public Attendance checkAttendanceStatus(int attendanceId) throws Exception{

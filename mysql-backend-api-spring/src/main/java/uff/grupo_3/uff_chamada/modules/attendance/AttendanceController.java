@@ -1,6 +1,8 @@
 package uff.grupo_3.uff_chamada.modules.attendance;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,7 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import uff.grupo_3.uff_chamada.modules.attendance.dto.request.CheckAttendanceStatusRequestDTO;
 import uff.grupo_3.uff_chamada.modules.attendance.dto.request.CreateAttendanceRequestDTO;
+import uff.grupo_3.uff_chamada.modules.attendance.dto.request.AttendancesByClassRequestDTO;
 import uff.grupo_3.uff_chamada.modules.attendance.dto.response.CheckAttendanceStatusResponseDTO;
+import uff.grupo_3.uff_chamada.modules.attendance.dto.response.AttendancesByClassResponseDTO;
 
 @Tag(name = "Attendance", description = "Attendance Requests")
 @RestController
@@ -103,6 +107,15 @@ public class AttendanceController {
     @ResponseBody
     public List<Attendance> findAttendancesByClassId(@PathVariable("id") int id) {
         return this.attendanceService.getAttendancesByClassId(id);
+    }
+
+    @PostMapping(path = "/findAttendancesByClass")
+    public ResponseEntity<Object> findAttendancesByClass(@RequestBody AttendancesByClassRequestDTO request){
+        try {
+            return ResponseEntity.ok(attendanceService.findAttendancesByClass(request.getClassId()));
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PostMapping(path = "/checkAttendanceStatus")
