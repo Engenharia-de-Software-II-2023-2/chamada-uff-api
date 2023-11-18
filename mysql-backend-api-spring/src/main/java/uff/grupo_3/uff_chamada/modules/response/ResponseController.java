@@ -41,7 +41,7 @@ public class ResponseController {
         return responseService.listResponse();
     }
 
-    @GetMapping(path = "/attendanceResponse/{id}")
+    @PostMapping(path = "/attendanceResponse")
     @ResponseBody
     public List<Response> attendanceResponse(@PathVariable("id") int id){
         return responseService.attendanceResponse(id);
