@@ -22,6 +22,7 @@ import uff.grupo_3.uff_chamada.modules.attendance.dto.request.CheckAttendanceSta
 import uff.grupo_3.uff_chamada.modules.attendance.dto.request.CreateAttendanceRequestDTO;
 import uff.grupo_3.uff_chamada.modules.attendance.dto.request.AttendancesByClassRequestDTO;
 import uff.grupo_3.uff_chamada.modules.attendance.dto.response.CheckAttendanceStatusResponseDTO;
+import uff.grupo_3.uff_chamada.modules.attendance.dto.response.createAttendanceResponseDTO;
 import uff.grupo_3.uff_chamada.modules.attendance.dto.response.AttendancesByClassResponseDTO;
 
 @Tag(name = "Attendance", description = "Attendance Requests")
@@ -43,15 +44,22 @@ public class AttendanceController {
         return this.attendanceService.getAttendance(id);
     }
 
-    @PostMapping(path = "/createAttendance", produces = "aplication/json")
-    public ResponseEntity<Void> createAttendance(@RequestBody CreateAttendanceRequestDTO request,
-            @AuthenticationPrincipal UserDetails userDetails) {
-        String userRole = userDetails.getAuthorities().iterator().next().getAuthority();
-        if ("ROLE_ADMIN".equals(userRole)) {
-            this.attendanceService.createAttendance(request.getClassId());
-            return ResponseEntity.ok().build();
+    @PostMapping(path = "/createAttendance")
+    public ResponseEntity createAttendance(@RequestBody CreateAttendanceRequestDTO request, @AuthenticationPrincipal UserDetails userDetails) {
+        
+        try {
+            String userRole = userDetails.getAuthorities().iterator().next().getAuthority();
+            if ("ROLE_ADMIN".equals(userRole)) {
+                int newAttendanceId = this.attendanceService.createAttendance(request.getClassId());
+
+                return ResponseEntity.ok(new createAttendanceResponseDTO(newAttendanceId));
+            }else {
+                return ResponseEntity.badRequest().body("somente professor pode criar chamada");
+            }
+        } catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-        return ResponseEntity.badRequest().build();
+        
     }
 
     @PutMapping(path = "/updateAttendance", produces = "aplication/json")
