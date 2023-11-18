@@ -64,7 +64,7 @@ public class ResponseService {
         this.responseRepository.deleteById(id);
     }
 
-    public List<Response> attendanceResponse(Response response) {
-        return this.responseRepository.findAllByAttendanceId(response.getAttendanceId());
+    public List<Response> attendanceResponse(int id) {
+        return this.responseRepository.findAllByAttendanceId(id);
     }
 }
