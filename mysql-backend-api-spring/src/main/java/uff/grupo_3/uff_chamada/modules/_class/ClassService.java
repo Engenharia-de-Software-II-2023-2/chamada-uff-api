@@ -78,8 +78,6 @@ public class ClassService {
                     );
                     professorClassesDto.getProfessorClasses().add(item);
                 }
-
-
             }
 
             return professorClassesDto;

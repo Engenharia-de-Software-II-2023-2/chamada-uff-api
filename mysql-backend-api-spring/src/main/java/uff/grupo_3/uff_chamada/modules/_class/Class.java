@@ -9,7 +9,7 @@ import jakarta.persistence.Table;
 import lombok.Data;
 
 @Entity
-@Table
+@Table(name = "class")
 @Data
 @SequenceGenerator(name = "class_id_sequence", sequenceName = "class_id_sequence")
 public class Class {
