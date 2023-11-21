@@ -12,6 +12,8 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Integer>
     
     Optional<List<Enrollment>> findByStudentId(int studentId);
 
+    List<Enrollment> findEnrollmentByClassId(int classId);
+
     // @Query(
     //     value = """
     //         with 

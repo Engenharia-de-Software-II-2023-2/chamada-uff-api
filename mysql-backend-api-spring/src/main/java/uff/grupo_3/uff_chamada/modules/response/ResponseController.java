@@ -1,6 +1,7 @@
 package uff.grupo_3.uff_chamada.modules.response;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -41,9 +42,9 @@ public class ResponseController {
         return responseService.listResponse();
     }
 
-    @PostMapping(path = "/attendanceResponse")
+    @GetMapping(path = "/attendanceResponse")
     @ResponseBody
-    public List<Response> attendanceResponse(@RequestBody Response response){
+    public Map<String, List<Map<String, Object>>> attendanceResponse(@RequestBody Response response){
         return responseService.attendanceResponse(response);
     }
 
