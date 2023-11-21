@@ -76,24 +76,29 @@ public class ResponseService {
         this.responseRepository.deleteById(id);
     }
 
-    public Map<String, List<String>> attendanceResponse(Response response) {
-        Map<String, List<String>> attendanceMap = new HashMap<>();
-        ArrayList<String> present = new ArrayList<String>();
-        ArrayList<String> absent = new ArrayList<String>();
+    public Map<String, List<Map<String, Object>>> attendanceResponse(Response response) {
+        Map<String, List<Map<String, Object>>> attendanceMap = new HashMap<>();
+        ArrayList<Map<String, Object>> present = new ArrayList<Map<String, Object>>();
+        ArrayList<Map<String, Object>> absent = new ArrayList<Map<String, Object>>();
         List<Response> attendanceResponse;
         List<Enrollment> classEnrollments;
 
         attendanceResponse = this.responseRepository.findAllByAttendanceId(response.getAttendanceId());
         for (Response resp : attendanceResponse) {
             User student = userService.getUserById(resp.getStudentId());
-            present.add(student.getName());
+            Map<String, Object> studentResponse = new HashMap<String, Object>();
+            studentResponse.put("name", student.getName());
+            studentResponse.put("id", resp.getStudentId());
+            present.add(studentResponse);
         }
 
         classEnrollments = enrollmentService.classEnrollments(attendanceService.getAttendance(response.getAttendanceId()).getClassId());
         for (Enrollment enroll : classEnrollments) {
-            if (!present.contains(userService.getUserById(enroll.getStudentId()).getName())) {
-                User student = userService.getUserById(enroll.getStudentId());
-                absent.add(student.getName());
+            Map<String, Object> studentResponse = new HashMap<String, Object>();
+            studentResponse.put("name", userService.getUserById(enroll.getStudentId()).getName());
+            studentResponse.put("id", enroll.getStudentId());
+            if (!present.contains(studentResponse)) {
+                absent.add(studentResponse);
             }
         }
 
