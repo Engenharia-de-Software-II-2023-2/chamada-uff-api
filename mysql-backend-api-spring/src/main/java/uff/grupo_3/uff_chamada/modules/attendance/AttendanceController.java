@@ -1,6 +1,8 @@
 package uff.grupo_3.uff_chamada.modules.attendance;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,7 +20,10 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import uff.grupo_3.uff_chamada.modules.attendance.dto.request.CheckAttendanceStatusRequestDTO;
 import uff.grupo_3.uff_chamada.modules.attendance.dto.request.CreateAttendanceRequestDTO;
+import uff.grupo_3.uff_chamada.modules.attendance.dto.request.AttendancesByClassRequestDTO;
 import uff.grupo_3.uff_chamada.modules.attendance.dto.response.CheckAttendanceStatusResponseDTO;
+import uff.grupo_3.uff_chamada.modules.attendance.dto.response.createAttendanceResponseDTO;
+import uff.grupo_3.uff_chamada.modules.attendance.dto.response.AttendancesByClassResponseDTO;
 
 @Tag(name = "Attendance", description = "Attendance Requests")
 @RestController
@@ -39,15 +44,22 @@ public class AttendanceController {
         return this.attendanceService.getAttendance(id);
     }
 
-    @PostMapping(path = "/createAttendance", produces = "aplication/json")
-    public ResponseEntity<Void> createAttendance(@RequestBody CreateAttendanceRequestDTO request,
-            @AuthenticationPrincipal UserDetails userDetails) {
-        String userRole = userDetails.getAuthorities().iterator().next().getAuthority();
-        if ("ROLE_ADMIN".equals(userRole)) {
-            this.attendanceService.createAttendance(request.getClassId());
-            return ResponseEntity.ok().build();
+    @PostMapping(path = "/createAttendance")
+    public ResponseEntity createAttendance(@RequestBody CreateAttendanceRequestDTO request, @AuthenticationPrincipal UserDetails userDetails) {
+        
+        try {
+            String userRole = userDetails.getAuthorities().iterator().next().getAuthority();
+            if ("ROLE_ADMIN".equals(userRole)) {
+                int newAttendanceId = this.attendanceService.createAttendance(request.getClassId());
+
+                return ResponseEntity.ok(new createAttendanceResponseDTO(newAttendanceId));
+            }else {
+                return ResponseEntity.badRequest().body("somente professor pode criar chamada");
+            }
+        } catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-        return ResponseEntity.badRequest().build();
+        
     }
 
     @PutMapping(path = "/updateAttendance", produces = "aplication/json")
@@ -103,6 +115,15 @@ public class AttendanceController {
     @ResponseBody
     public List<Attendance> findAttendancesByClassId(@PathVariable("id") int id) {
         return this.attendanceService.getAttendancesByClassId(id);
+    }
+
+    @PostMapping(path = "/findAttendancesByClass")
+    public ResponseEntity<Object> findAttendancesByClass(@RequestBody AttendancesByClassRequestDTO request){
+        try {
+            return ResponseEntity.ok(attendanceService.findAttendancesByClass(request.getClassId()));
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PostMapping(path = "/checkAttendanceStatus")

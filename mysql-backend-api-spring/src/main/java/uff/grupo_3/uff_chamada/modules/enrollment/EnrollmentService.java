@@ -1,5 +1,6 @@
 package uff.grupo_3.uff_chamada.modules.enrollment;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -90,6 +91,9 @@ public class EnrollmentService {
     }
 
     public void createEnrollment(Enrollment enrollment){
+        if(enrollment.getCreatedAt() == null){
+            enrollment.setCreatedAt(LocalDateTime.now());
+        }
         enrollmentRepository.save(enrollment);
     }
 
@@ -120,6 +124,10 @@ public class EnrollmentService {
         }
 
         return attendanceRecord;
+    }
+
+    public List<Enrollment> classEnrollments(int classId) {
+        return this.enrollmentRepository.findEnrollmentByClassId(classId);
     }
 
 }

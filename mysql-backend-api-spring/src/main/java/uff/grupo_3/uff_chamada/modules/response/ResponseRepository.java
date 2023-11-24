@@ -14,7 +14,7 @@ public interface ResponseRepository extends JpaRepository<Response, Integer> {
 
     List<Response> findAllByAttendanceId(int attendanceId);
     
-    @Query(value = "SELECT *FROM response WHERE student_id = :studentId", nativeQuery = true)
+    @Query(value = "SELECT * FROM response WHERE student_id = :studentId", nativeQuery = true)
     public List<Response> findByStudentId(@Param("studentId") int studentId);
 
     @Query(value = "SELECT * FROM response WHERE student_id = :studentId AND attendance_id = :attendanceId",  nativeQuery = true)

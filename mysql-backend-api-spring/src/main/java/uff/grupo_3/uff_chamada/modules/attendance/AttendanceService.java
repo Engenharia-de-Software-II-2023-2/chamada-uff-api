@@ -7,6 +7,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import uff.grupo_3.uff_chamada.modules.attendance.dto.response.AttendancesByClassResponseDTO;
+
 @Service
 public class AttendanceService {
     private AttendanceRepository attendanceRepository;
@@ -20,14 +22,19 @@ public class AttendanceService {
         return this.attendanceRepository.findById(id).orElseThrow(() -> new IllegalStateException("attedance de id" + id + " não existe"));
     }
 
-    public void createAttendance(int classId){
+    public int createAttendance(int classId) throws Exception{
         Attendance newAttendance = new Attendance();
         newAttendance.setClassId(classId);
         newAttendance.setStart(null);
         newAttendance.setDuration(null);
+        newAttendance.setLatitude(null);
+        newAttendance.setLongitude(null);
+        newAttendance.setRadius(null);
         newAttendance.setStatus(AttendanceStatus.WAITING);
 
         this.attendanceRepository.save(newAttendance);
+        // return attendanceRepository.findById(newAttendance.getId()).orElseThrow(() -> new Exception("unable to create attendance"));
+        return newAttendance.getId();
     }
 
     public void updateAttendance(Attendance attendance){
@@ -79,6 +86,10 @@ public class AttendanceService {
 
     public List<Attendance> getAttendancesByClassId(int id){
         return attendanceRepository.findByClassId(id);
+    }
+
+    public AttendancesByClassResponseDTO findAttendancesByClass(int classId){
+        return new AttendancesByClassResponseDTO(attendanceRepository.findByClassId(classId));
     }
 
     public Attendance checkAttendanceStatus(int attendanceId) throws Exception{
