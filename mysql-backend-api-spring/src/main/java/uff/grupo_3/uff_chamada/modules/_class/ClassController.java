@@ -29,7 +29,8 @@ public class ClassController {
         this.classService = classService;
     }
 
-    @GetMapping("/getClass/{id}")
+    @GetMapping(path = "/getClass/{id}", produces = "application/json")
+    @ResponseBody
     public Class getClass(@PathVariable("id") int id){
         return this.classService.getClass(id);
     }
