@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import uff.grupo_3.uff_chamada.modules.response.DTO.request.CheckResponseRequestDTO;
+import uff.grupo_3.uff_chamada.modules.response.DTO.response.CheckResponseDTO;
 
 @Tag(name = "Response", description = "Response Requests")
 @Controller
@@ -81,5 +83,9 @@ public class ResponseController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping(path = "/checkResponse")
+    public ResponseEntity<CheckResponseDTO> checkResponse(@RequestBody CheckResponseRequestDTO request){
+        return ResponseEntity.ok().body(responseService.findByStudentIdAttendanceId(request.getStudentId(), request.getAttendanceId()));
+    }
 
 }

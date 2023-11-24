@@ -4,15 +4,16 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import uff.grupo_3.uff_chamada.modules.attendance.Attendance;
 import uff.grupo_3.uff_chamada.modules.attendance.AttendanceService;
 import uff.grupo_3.uff_chamada.modules.attendance.AttendanceStatus;
+import uff.grupo_3.uff_chamada.modules.response.DTO.response.CheckResponseDTO;
 import uff.grupo_3.uff_chamada.modules.enrollment.Enrollment;
 import uff.grupo_3.uff_chamada.modules.enrollment.EnrollmentService;
 import uff.grupo_3.uff_chamada.modules.user.User;
@@ -106,5 +107,14 @@ public class ResponseService {
         attendanceMap.put("present", present);
         
         return attendanceMap;
+    }
+
+    public CheckResponseDTO findByStudentIdAttendanceId(int studentId, int attendanceId){
+        Optional<Response> responseOpt = responseRepository.findByStudentIdAttendanceId(studentId, attendanceId);
+
+        Integer responseId = responseOpt.isPresent() ? responseOpt.get().getId() : null;
+        boolean hasResponded = responseId != null;
+
+        return new CheckResponseDTO(responseId, studentId, attendanceId, hasResponded);
     }
 }
