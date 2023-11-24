@@ -2,6 +2,7 @@ package uff.grupo_3.uff_chamada.modules.response;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import uff.grupo_3.uff_chamada.modules.attendance.Attendance;
 import uff.grupo_3.uff_chamada.modules.attendance.AttendanceService;
 import uff.grupo_3.uff_chamada.modules.attendance.AttendanceStatus;
+import uff.grupo_3.uff_chamada.modules.response.DTO.response.CheckResponseDTO;
 
 @Service
 public class ResponseService {
@@ -66,5 +68,14 @@ public class ResponseService {
 
     public List<Response> attendanceResponse(Response response) {
         return this.responseRepository.findAllByAttendanceId(response.getAttendanceId());
+    }
+
+    public CheckResponseDTO findByStudentIdAttendanceId(int studentId, int attendanceId){
+        Optional<Response> responseOpt = responseRepository.findByStudentIdAttendanceId(studentId, attendanceId);
+
+        Integer responseId = responseOpt.isPresent() ? responseOpt.get().getId() : null;
+        boolean hasResponded = responseId != null;
+
+        return new CheckResponseDTO(responseId, studentId, attendanceId, hasResponded);
     }
 }
