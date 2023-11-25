@@ -13,7 +13,5 @@ public interface ClassRepository extends JpaRepository<Class, Integer>{
     
     @Query(value = "SELECT * FROM class WHERE professor_id = :professorId", nativeQuery = true)
     public List<Class> findClassByProfessorId(@Param("professorId") int professorId);
-
-    @Query(value = "SELECT * FROM class WHERE semester_id = :semesterId", nativeQuery = true)
-    public List<Class> findClassBySemesterId(@Param("semesterId") int semesterId);  
+      
 }
