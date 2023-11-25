@@ -1,6 +1,7 @@
 package uff.grupo_3.uff_chamada.modules.response;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import uff.grupo_3.uff_chamada.modules.response.DTO.request.CheckResponseRequestDTO;
+import uff.grupo_3.uff_chamada.modules.response.DTO.response.CheckResponseDTO;
 
 @Tag(name = "Response", description = "Response Requests")
 @Controller
@@ -41,9 +44,9 @@ public class ResponseController {
         return responseService.listResponse();
     }
 
-    @PostMapping(path = "/attendanceResponse")
+    @GetMapping(path = "/attendanceResponse")
     @ResponseBody
-    public List<Response> attendanceResponse(@RequestBody Response response){
+    public Map<String, List<Map<String, Object>>> attendanceResponse(@RequestBody Response response){
         return responseService.attendanceResponse(response);
     }
 
@@ -80,5 +83,9 @@ public class ResponseController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping(path = "/checkResponse")
+    public ResponseEntity<CheckResponseDTO> checkResponse(@RequestBody CheckResponseRequestDTO request){
+        return ResponseEntity.ok().body(responseService.findByStudentIdAttendanceId(request.getStudentId(), request.getAttendanceId()));
+    }
 
 }

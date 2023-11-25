@@ -2,6 +2,7 @@ package uff.grupo_3.uff_chamada.modules.response;
 
 import java.time.LocalDateTime;
 
+import jakarta.persistence.ConstructorResult;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
