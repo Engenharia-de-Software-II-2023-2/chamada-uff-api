@@ -53,7 +53,7 @@ public class AttendanceServiceTests {
         
         // Verificar se a lista de Attendance dentro do DTO tem o mesmo tamanho que a lista esperada
         assertEquals(expectedAttendances.size(), actualDTO.getAttendances().size());
-        
+
         assertEquals(expectedAttendances.get(0).getId(), actualDTO.getAttendances().get(0).getId());
         assertEquals(expectedAttendances.get(0).getClassId(), actualDTO.getAttendances().get(0).getClassId());
         assertEquals(expectedAttendances.get(0).getStatus(), actualDTO.getAttendances().get(0).getStatus());
@@ -61,5 +61,42 @@ public class AttendanceServiceTests {
         assertEquals(expectedAttendances.get(1).getId(), actualDTO.getAttendances().get(1).getId());
         assertEquals(expectedAttendances.get(1).getClassId(), actualDTO.getAttendances().get(1).getClassId());
         assertEquals(expectedAttendances.get(1).getStatus(), actualDTO.getAttendances().get(1).getStatus());
+    }
+
+    @Test
+    public void shouldFindOpenAttendances() {
+        Attendance attendance1 = new Attendance();
+        attendance1.setId(4);
+        attendance1.setClassId(1);
+        attendance1.setStatus(AttendanceStatus.ACTIVE);
+
+        Attendance attendance2 = new Attendance();
+        attendance2.setId(5);
+        attendance2.setClassId(1);
+        attendance2.setStatus(AttendanceStatus.OVER);
+
+        Attendance attendance3 = new Attendance();
+        attendance3.setId(6);
+        attendance3.setClassId(1);
+        attendance3.setStatus(AttendanceStatus.ACTIVE);
+
+        List<Attendance> expectedAttendances = Arrays.asList(attendance1, attendance3);
+
+        // Step 3: Use Mockito.when() to simulate the behavior of findOpenAttendances()
+        Mockito.when(attendanceRepository.findOpenAttendances(anyInt())).thenReturn(expectedAttendances);
+
+        List<Attendance> actualAttendances = attendanceService.getActiveAttendances(1);
+
+        Assertions.assertThat(actualAttendances).isNotNull();
+        
+        assertEquals(expectedAttendances.size(), actualAttendances.size());
+
+        assertEquals(expectedAttendances.get(0).getId(), actualAttendances.get(0).getId());
+        assertEquals(expectedAttendances.get(0).getClassId(), actualAttendances.get(0).getClassId());
+        assertEquals(expectedAttendances.get(0).getStatus(), actualAttendances.get(0).getStatus());
+
+        assertEquals(expectedAttendances.get(1).getId(), actualAttendances.get(1).getId());
+        assertEquals(expectedAttendances.get(1).getClassId(), actualAttendances.get(1).getClassId());
+        assertEquals(expectedAttendances.get(1).getStatus(), actualAttendances.get(1).getStatus());
     }
 }
