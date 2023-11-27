@@ -1,6 +1,7 @@
 package uff.grupo_3.uff_chamada.modules._class;
 
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.when;
 
 import java.util.Optional;
 
