@@ -46,7 +46,7 @@ public class ClassServiceTests {
     public void shouldGetClassByIdException(){
         // arrange
         int id = 0;
-        Mockito.when(classRepository.findById(id)).thenThrow(new IllegalStateException("classe de id " + id + " não existe"));
+        when(classRepository.findById(id)).thenThrow(new IllegalStateException("classe de id " + id + " não existe"));
 
         //act
         //assert

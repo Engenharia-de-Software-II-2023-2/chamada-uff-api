@@ -6,12 +6,16 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "class")
 @Data
 @SequenceGenerator(name = "class_id_sequence", sequenceName = "class_id_sequence")
+@AllArgsConstructor
+@NoArgsConstructor
 public class Class {
 
     @Id
