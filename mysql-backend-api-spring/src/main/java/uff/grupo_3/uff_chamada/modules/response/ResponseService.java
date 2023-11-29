@@ -77,7 +77,7 @@ public class ResponseService {
         this.responseRepository.deleteById(id);
     }
 
-    public Map<String, List<Map<String, Object>>> attendanceResponse(Response response) {
+    public Map<String, List<Map<String, Object>>> attendanceResponse(Response response) throws Exception{
         Map<String, List<Map<String, Object>>> attendanceMap = new HashMap<>();
         ArrayList<Map<String, Object>> present = new ArrayList<Map<String, Object>>();
         ArrayList<Map<String, Object>> absent = new ArrayList<Map<String, Object>>();
