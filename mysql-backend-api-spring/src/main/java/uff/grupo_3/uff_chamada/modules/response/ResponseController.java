@@ -44,7 +44,7 @@ public class ResponseController {
         return responseService.listResponse();
     }
 
-    @GetMapping(path = "/attendanceResponse")
+    @PostMapping(path = "/attendanceResponse")
     @ResponseBody
     public Map<String, List<Map<String, Object>>> attendanceResponse(@RequestBody Response response){
         return responseService.attendanceResponse(response);
