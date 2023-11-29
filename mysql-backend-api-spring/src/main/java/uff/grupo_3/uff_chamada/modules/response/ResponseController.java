@@ -1,5 +1,6 @@
 package uff.grupo_3.uff_chamada.modules.response;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -46,8 +47,16 @@ public class ResponseController {
 
     @PostMapping(path = "/attendanceResponse")
     @ResponseBody
-    public Map<String, List<Map<String, Object>>> attendanceResponse(@RequestBody Response response){
-        return responseService.attendanceResponse(response);
+    // Map<String, List<Map<String, Object>>>
+    public ResponseEntity attendanceResponse(@RequestBody Response response){
+        try {
+            return ResponseEntity.ok().body(responseService.attendanceResponse(response));
+        }catch (Exception e){
+            HashMap<String, Object> errorMap = new HashMap<>();
+            errorMap.put("msg", e.getLocalizedMessage());
+            errorMap.put("trace", e.getStackTrace());
+            return ResponseEntity.badRequest().body(errorMap);
+        }
     }
 
     @PostMapping(path = "/createResponse")
