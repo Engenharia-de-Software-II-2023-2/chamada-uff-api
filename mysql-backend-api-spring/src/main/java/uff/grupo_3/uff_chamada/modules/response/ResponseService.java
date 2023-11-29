@@ -78,35 +78,39 @@ public class ResponseService {
     }
 
     public Map<String, List<Map<String, Object>>> attendanceResponse(Response response) throws Exception{
-        Map<String, List<Map<String, Object>>> attendanceMap = new HashMap<>();
-        ArrayList<Map<String, Object>> present = new ArrayList<Map<String, Object>>();
-        ArrayList<Map<String, Object>> absent = new ArrayList<Map<String, Object>>();
-        List<Response> attendanceResponse;
-        List<Enrollment> classEnrollments;
-
-        attendanceResponse = this.responseRepository.findAllByAttendanceId(response.getAttendanceId());
-        for (Response resp : attendanceResponse) {
-            User student = userService.getUserById(resp.getStudentId());
-            Map<String, Object> studentResponse = new HashMap<String, Object>();
-            studentResponse.put("name", student.getName());
-            studentResponse.put("id", resp.getStudentId());
-            present.add(studentResponse);
-        }
-
-        classEnrollments = enrollmentService.classEnrollments(attendanceService.getAttendance(response.getAttendanceId()).getClassId());
-        for (Enrollment enroll : classEnrollments) {
-            Map<String, Object> studentResponse = new HashMap<String, Object>();
-            studentResponse.put("name", userService.getUserById(enroll.getStudentId()).getName());
-            studentResponse.put("id", enroll.getStudentId());
-            if (!present.contains(studentResponse)) {
-                absent.add(studentResponse);
+        try {
+            Map<String, List<Map<String, Object>>> attendanceMap = new HashMap<>();
+            ArrayList<Map<String, Object>> present = new ArrayList<Map<String, Object>>();
+            ArrayList<Map<String, Object>> absent = new ArrayList<Map<String, Object>>();
+            List<Response> attendanceResponse;
+            List<Enrollment> classEnrollments;
+    
+            attendanceResponse = this.responseRepository.findAllByAttendanceId(response.getAttendanceId());
+            for (Response resp : attendanceResponse) {
+                User student = userService.getUserById(resp.getStudentId());
+                Map<String, Object> studentResponse = new HashMap<String, Object>();
+                studentResponse.put("name", student.getName());
+                studentResponse.put("id", resp.getStudentId());
+                present.add(studentResponse);
             }
+    
+            classEnrollments = enrollmentService.classEnrollments(attendanceService.getAttendance(response.getAttendanceId()).getClassId());
+            for (Enrollment enroll : classEnrollments) {
+                Map<String, Object> studentResponse = new HashMap<String, Object>();
+                studentResponse.put("name", userService.getUserById(enroll.getStudentId()).getName());
+                studentResponse.put("id", enroll.getStudentId());
+                if (!present.contains(studentResponse)) {
+                    absent.add(studentResponse);
+                }
+            }
+    
+            attendanceMap.put("absent", absent);
+            attendanceMap.put("present", present);
+            
+            return attendanceMap;
+        } catch (Exception e){
+            throw e;
         }
-
-        attendanceMap.put("absent", absent);
-        attendanceMap.put("present", present);
-        
-        return attendanceMap;
     }
 
     public CheckResponseDTO findByStudentIdAttendanceId(int studentId, int attendanceId){
