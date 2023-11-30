@@ -18,6 +18,8 @@ public class Class {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "class_id_sequence")
     private int id;
     private String name;
+    private String subjectName;
     private int professorId;
     private int semesterId;
+    private String schedule;
 }
